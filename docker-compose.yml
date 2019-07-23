@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  apitemplate:
+    image: apitemplate
+    build:
+      context: ./src
+      dockerfile: api/Dockerfile
+    container_name: "apitemplate"
+    ports:
+     - $PORT:80
+    environment: 
+     - ASPNETCORE_ENVIRONMENT=Production
