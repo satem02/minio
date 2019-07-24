@@ -6,49 +6,22 @@ version: '2.1'
 services:
  minio1:
   image: minio/minio:$MINIO_VERSION
+  container_name: "customminio"
   volumes:
    - data1:/data
   ports:
    - $MINIO_PORT_1:9000
   environment:
-   MINIO_ACCESS_KEY: $M_ACCESS_KEY_FILE
-   MINIO_SECRET_KEY: $M_SECRET_KEY_FILE
-  command: server http://minio1/data http://minio2/data http://minio3/data http://minio4/data 
- minio2:
-  image: minio/minio:$MINIO_VERSION
-  volumes:
-   - data2:/data
-  ports:
-   - $MINIO_PORT_2:9000
-  environment:
-   MINIO_ACCESS_KEY: $M_ACCESS_KEY_FILE
-   MINIO_SECRET_KEY: $M_SECRET_KEY_FILE
-  command: server http://minio1/data http://minio2/data http://minio3/data http://minio4/data 
- minio3:
-  image: minio/minio:$MINIO_VERSION
-  volumes:
-   - data3:/data
-  ports:
-   - $MINIO_PORT_3:9000
-  environment:
-   MINIO_ACCESS_KEY: $M_ACCESS_KEY_FILE
-   MINIO_SECRET_KEY: $M_SECRET_KEY_FILE
-  command: server http://minio1/data http://minio2/data http://minio3/data http://minio4/data 
- minio4:
-  image: minio/minio:$MINIO_VERSION
-  volumes:
-   - data4:/data
-  ports:
-   - $MINIO_PORT_4:9000
-  environment:
-   MINIO_ACCESS_KEY: $M_ACCESS_KEY_FILE
-   MINIO_SECRET_KEY: $M_SECRET_KEY_FILE
-  command: server http://minio1/data http://minio2/data http://minio3/data http://minio4/data 
-
+   MINIO_ACCESS_KEY: $MINIO_ACCESS_KEY
+   MINIO_SECRET_KEY: $MINIO_SECRET_KEY
+  command: server *
+  networks:
+    - minionetwork
 ## By default this config uses default local driver,
 ## For custom volumes replace with volume driver configuration.
 volumes:
   data1:
-  data2:
-  data3:
-  data4:
+
+networks:
+  minionetwork:
+    driver: bridge

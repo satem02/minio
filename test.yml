@@ -14,8 +14,8 @@ services:
   ports:
    - "9001:9000"
   environment:
-   MINIO_ACCESS_KEY: $M_ACCESS_KEY_FILE
-   MINIO_SECRET_KEY: $M_SECRET_KEY_FILE
+   MINIO_ACCESS_KEY: $MINIO_ACCESS_KEY
+   MINIO_SECRET_KEY: $MINIO_SECRET_KEY
   command: server http://minio1/data 
 ## By default this config uses default local driver,
 ## For custom volumes replace with volume driver configuration.
