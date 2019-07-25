@@ -14,9 +14,14 @@ namespace api
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
-            Configuration = configuration;
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddEnvironmentVariables();
+            Configuration = builder.Build();
         }
 
         public IConfiguration Configuration { get; }
@@ -25,6 +30,7 @@ namespace api
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<MyOptions>(Configuration);
+            services.Configure<EnvironmentConfig>(Configuration);
 
             services.AddTransient<IFileService, FileManager>();
             services.AddTransient<IFileUploadService, FileUploadManager>();

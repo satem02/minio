@@ -5,19 +5,26 @@ version: '2.1'
 # 9001 through 9004.
 services:
  minio1:
-  build:
-    context: src/minio
-    args:
-      MINIO_VERSION: $MINIO_VERSION
+  image: minio/minio:$MINIO_VERSION
+  container_name: "customminio1"
   volumes:
    - data1:/data
   ports:
-   - "9001:9000"
+   - "9000:9000"
+  expose:
+    - "9000"
   environment:
    MINIO_ACCESS_KEY: $MINIO_ACCESS_KEY
    MINIO_SECRET_KEY: $MINIO_SECRET_KEY
-  command: server http://minio1/data 
+  command: server *
+  networks:
+    - minionetwork
+
 ## By default this config uses default local driver,
 ## For custom volumes replace with volume driver configuration.
 volumes:
   data1:
+
+networks:
+  minionetwork:
+    driver: bridge

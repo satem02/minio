@@ -5,6 +5,7 @@ using api.Models;
 using api.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace api.Controllers
 {
@@ -14,10 +15,12 @@ namespace api.Controllers
     public class FileManagerController : ControllerBase
     {
         private readonly IFileUploadService _fileUploadService;
+        private readonly EnvironmentConfig _configuration;
 
-        public FileManagerController(IFileUploadService fileUploadService)
+        public FileManagerController(IFileUploadService fileUploadService, IOptions<EnvironmentConfig> configuration)
         {
             _fileUploadService = fileUploadService;
+            _configuration = configuration.Value;
         }
 
         [HttpPost]
@@ -27,6 +30,7 @@ namespace api.Controllers
             response.Data = await _fileUploadService.UploadFile(file);
             return Ok(new
             {
+                _configuration.X_BACKEND_SERVER,
                 response
             });
         }
@@ -39,6 +43,7 @@ namespace api.Controllers
                 return File(result.MemoryStream, result.ContentType, result.FileName);
             return Ok(new
             {
+                _configuration.X_BACKEND_SERVER,
                 result.Message,
                 result.IsSuccess
             });

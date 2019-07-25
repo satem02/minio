@@ -1,0 +1,33 @@
+version: '2.1'
+
+# starts 4 docker containers running minio server instances. Each
+# minio server's web interface will be accessible on the host at port
+# 9001 through 9004.
+services:
+ minio1:
+  image: minio/minio:$MINIO_VERSION
+  volumes:
+   - data1:/data
+  ports:
+   - "9000:9000"
+  environment:
+   MINIO_ACCESS_KEY: minio
+   MINIO_SECRET_KEY: minio123
+  command: server *
+#  minio1:
+#   build:
+#     context: src/minio
+#     args:
+#       MINIO_VERSION: $MINIO_VERSION
+#   volumes:
+#    - data1:/data
+#   ports:
+#    - "9001:9000"
+#   environment:
+#    MINIO_ACCESS_KEY: $MINIO_ACCESS_KEY
+#    MINIO_SECRET_KEY: $MINIO_SECRET_KEY
+#   command: server http://minio1/data 
+## By default this config uses default local driver,
+## For custom volumes replace with volume driver configuration.
+volumes:
+  data1:

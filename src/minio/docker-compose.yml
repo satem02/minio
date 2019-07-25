@@ -6,22 +6,82 @@ version: '2.1'
 services:
  minio1:
   image: minio/minio:$MINIO_VERSION
-  container_name: "customminio"
+  container_name: "customminio1"
   volumes:
    - data1:/data
-  ports:
-   - $MINIO_PORT_1:9000
   environment:
    MINIO_ACCESS_KEY: $MINIO_ACCESS_KEY
    MINIO_SECRET_KEY: $MINIO_SECRET_KEY
-  command: server *
-  networks:
-    - minionetwork
+  #  command: server *
+  command: server http://minio1/data http://minio2/data http://minio3/data http://minio4/data 
+  # networks:
+  #   - minionetwork
+
+ minio2:
+  image: minio/minio:$MINIO_VERSION  
+  container_name: "customminio2"
+  volumes:
+   - data2:/data
+  environment:
+   MINIO_ACCESS_KEY: $MINIO_ACCESS_KEY
+   MINIO_SECRET_KEY: $MINIO_SECRET_KEY
+  command: server http://minio1/data http://minio2/data http://minio3/data http://minio4/data 
+  # networks:
+  #   - minionetwork
+
+ minio3:
+  image: minio/minio:$MINIO_VERSION
+  container_name: "customminio3"
+  volumes:
+   - data3:/data
+  environment:
+   MINIO_ACCESS_KEY: $MINIO_ACCESS_KEY
+   MINIO_SECRET_KEY: $MINIO_SECRET_KEY
+  command: server http://minio1/data http://minio2/data http://minio3/data http://minio4/data 
+  # networks:
+  #   - minionetwork
+
+ minio4:
+  image: minio/minio:$MINIO_VERSION
+  container_name: "customminio4"
+  volumes:
+   - data4:/data
+  environment:
+   MINIO_ACCESS_KEY: $MINIO_ACCESS_KEY
+   MINIO_SECRET_KEY: $MINIO_SECRET_KEY
+  command: server http://minio1/data http://minio2/data http://minio3/data http://minio4/data 
+  # networks:
+  #   - minionetwork
+
+ proxy:
+  image: minio-proxy
+  container_name: "minioproxy"
+  build:
+    context: ./proxy
+  ports:
+    - '9000:8080'
+  expose:
+    - "9000"
+  depends_on:
+    - minio1
+    - minio2
+    - minio3
+    - minio4
+  links:
+    - minio1:minio_1
+    - minio2:minio_2
+    - minio3:minio_3
+    - minio4:minio_4
+  # networks:
+  #   - minionetwork
 ## By default this config uses default local driver,
 ## For custom volumes replace with volume driver configuration.
 volumes:
   data1:
+  data2:
+  data3:
+  data4:
 
-networks:
-  minionetwork:
-    driver: bridge
+# networks:
+#   minionetwork:
+#     driver: bridge

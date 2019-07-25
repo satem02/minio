@@ -1,0 +1,31 @@
+version: '3.4'
+
+services:
+  apitemplate:
+    image: apitemplate
+    build:
+      context: ./src
+      dockerfile: api/Dockerfile
+    container_name: "apitemplate"
+    ports:
+     - $API_PORT:80
+    environment: 
+     - ASPNETCORE_ENVIRONMENT=Production
+     - X_BACKEND_SERVER=server1
+
+  minio1:
+    image: minio/minio:$MINIO_VERSION
+    container_name: "customminio1"
+    volumes:
+    - data1:/data
+    ports:
+    - "9000:9000"
+    environment:
+      MINIO_ACCESS_KEY: $MINIO_ACCESS_KEY
+      MINIO_SECRET_KEY: $MINIO_SECRET_KEY
+    command: server *
+
+  ## By default this config uses default local driver,
+  ## For custom volumes replace with volume driver configuration.
+volumes:
+  data1:
