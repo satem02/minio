@@ -15,12 +15,14 @@ namespace api.Services
     {
         private readonly MinioClient _client;
         private readonly ILogger<FileManager> _logger;
+        private readonly EnvironmentConfig _configuration;
 
-        public FileManager(IOptions<MyOptions> options, ILogger<FileManager> logger)
+
+        public FileManager(IOptions<MyOptions> options, ILogger<FileManager> logger, IOptions<EnvironmentConfig> configuration)
         {
             _logger = logger;
-            var minioOption = options.Value.Minio;
-            _client = new MinioClient(minioOption.Endpoint, minioOption.Accesskey, minioOption.Secretkey);
+            var minioOption = configuration.Value;
+            _client = new MinioClient(minioOption.MINIO_ENDPOINT, minioOption.MINIO_ACCESS_KEY, minioOption.MINIO_SECRET_KEY);
             _logger.LogInformation("connected client");
         }
 
