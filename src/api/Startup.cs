@@ -16,6 +16,7 @@ namespace api
     {
         public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
+            _env = env;
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
@@ -23,7 +24,7 @@ namespace api
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
         }
-
+        IHostingEnvironment _env;
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -62,7 +63,7 @@ namespace api
             else
             {
                 levelSwitch.MinimumLevel = LogEventLevel.Information;
-                app.UseHsts();
+                //app.UseHsts();
             }
 
             app.UseCustomSwagger();

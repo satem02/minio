@@ -1,8 +1,5 @@
 version: '2.1'
 
-# starts 4 docker containers running minio server instances. Each
-# minio server's web interface will be accessible on the host at port
-# 9001 through 9004.
 services:
  minio1:
   image: minio/minio:$MINIO_VERSION
@@ -13,7 +10,9 @@ services:
    MINIO_ACCESS_KEY: $MINIO_ACCESS_KEY
    MINIO_SECRET_KEY: $MINIO_SECRET_KEY
   command: server data
-
+  networks:
+    - minionetwork
+    
  minio2:
   image: minio/minio:$MINIO_VERSION  
   container_name: "customminio2"
@@ -22,8 +21,9 @@ services:
   environment:
    MINIO_ACCESS_KEY: $MINIO_ACCESS_KEY
    MINIO_SECRET_KEY: $MINIO_SECRET_KEY
-   MINIO_BUCKET: safak
   command: server data
+  networks:
+    - minionetwork
 
  minio3:
   image: minio/minio:$MINIO_VERSION
@@ -34,6 +34,8 @@ services:
    MINIO_ACCESS_KEY: $MINIO_ACCESS_KEY
    MINIO_SECRET_KEY: $MINIO_SECRET_KEY
   command: server data
+  networks:
+    - minionetwork
 
  minio4:
   image: minio/minio:$MINIO_VERSION
@@ -44,13 +46,16 @@ services:
    MINIO_ACCESS_KEY: $MINIO_ACCESS_KEY
    MINIO_SECRET_KEY: $MINIO_SECRET_KEY
   command: server data
-
-
+  networks:
+    - minionetwork
+    
  proxy:
   image: minio-proxy
-  container_name: "minioproxy"
+  container_name: $MINIO_PROXY_NAME
   build:
     context: ./proxy
+  volumes:
+    - data1:/data
   ports:
     - '9000:8080'
   depends_on:
@@ -63,10 +68,9 @@ services:
     - minio2:minio_2
     - minio3:minio_3
     - minio4:minio_4
-  # networks:
-  #   - minionetwork
-## By default this config uses default local driver,
-## For custom volumes replace with volume driver configuration.
+  networks:
+    - minionetwork
+
 volumes:
   data1:
     driver: local
@@ -74,7 +78,6 @@ volumes:
       type: none
       device: /Users/temel/Desktop/MiniData
       o: bind
-
-# networks:
-#   minionetwork:
-#     driver: bridge
+networks:
+  minionetwork:
+    driver: bridge

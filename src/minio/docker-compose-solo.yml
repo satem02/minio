@@ -6,7 +6,7 @@ version: '2.1'
 services:
  minio1:
   image: minio/minio:$MINIO_VERSION
-  container_name: "customminio1"
+  container_name: $MINIO_PROXY_NAME
   volumes:
    - data1:/data
   ports:

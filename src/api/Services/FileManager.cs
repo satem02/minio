@@ -18,7 +18,7 @@ namespace api.Services
         private readonly EnvironmentConfig _configuration;
 
 
-        public FileManager(IOptions<MyOptions> options, ILogger<FileManager> logger, IOptions<EnvironmentConfig> configuration)
+        public FileManager(ILogger<FileManager> logger, IOptions<EnvironmentConfig> configuration)
         {
             _logger = logger;
             var minioOption = configuration.Value;
