@@ -17,13 +17,15 @@ namespace api.Services
         private readonly ILogger<FileManager> _logger;
         private readonly EnvironmentConfig _configuration;
 
-
         public FileManager(ILogger<FileManager> logger, IOptions<EnvironmentConfig> configuration)
         {
             _logger = logger;
             var minioOption = configuration.Value;
+            _logger.LogInformation("MINIO_ENDPOINT:" + minioOption.MINIO_ENDPOINT);
+            _logger.LogInformation("MINIO_ACCESS_KEY:" + minioOption.MINIO_ACCESS_KEY);
+            _logger.LogInformation("MINIO_SECRET_KEY:" + minioOption.MINIO_SECRET_KEY);
             _client = new MinioClient(minioOption.MINIO_ENDPOINT, minioOption.MINIO_ACCESS_KEY, minioOption.MINIO_SECRET_KEY);
-            _logger.LogInformation("connected client");
+            _logger.LogInformation("connected client:");
         }
 
         public Task<bool> BucketExistsAsync(string bucketName, CancellationToken cancellationToken = default(CancellationToken))

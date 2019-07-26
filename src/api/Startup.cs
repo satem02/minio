@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
+using SerilogLog = Serilog.Log;
 
 namespace api
 {
@@ -48,8 +49,8 @@ namespace api
             if (env.IsDevelopment())
             {
                 levelSwitch.MinimumLevel = LogEventLevel.Debug;
-                Serilog.Log.Logger = new LoggerConfiguration()
-                  .WriteTo.Sink((ILogEventSink)Serilog.Log.Logger)
+                SerilogLog.Logger = new LoggerConfiguration()
+                  .WriteTo.Sink((ILogEventSink)SerilogLog.Logger)
                   .WriteTo.File(
                     "log.txt",
                     outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}",

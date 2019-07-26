@@ -9,10 +9,17 @@ using SerilogLog = Serilog.Log;
 
 namespace api
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Program
     {
-        private static readonly LoggingLevelSwitch LevelSwitch = new LoggingLevelSwitch();
+        private static readonly LoggingLevelSwitch LevelSwitch = new LoggingLevelSwitch(LogEventLevel.Information);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="args"></param>
         public static void Main(string[] args)
         {
             SerilogLog.Logger = new LoggerConfiguration()
@@ -29,6 +36,7 @@ namespace api
                 CreateWebHostBuilder(args)
                 .Build()
                 .Run();
+                SerilogLog.Information("Start the web host!");
             }
             catch (System.Exception exp)
             {
@@ -39,12 +47,20 @@ namespace api
                 SerilogLog.Information("Ending the web host!");
                 SerilogLog.CloseAndFlush();
             }
-        }
 
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                    .ConfigureLogging((hostingContext, config) => { config.ClearProviders(); })
-                    .ConfigureServices(s => { s.AddSingleton(LevelSwitch); })
-                    .UseStartup<Startup>();
+                .ConfigureLogging((hostingContext, config) =>
+                {
+                    config.ClearProviders();
+                })
+                .ConfigureServices(s => { s.AddSingleton(LevelSwitch); })
+                .UseStartup<Startup>();
     }
 }

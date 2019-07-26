@@ -1,0 +1,35 @@
+version: '3.4'
+
+services:
+  apitemplate:
+    image: apitemplate
+    build:
+      context: ./src
+      dockerfile: api/Dockerfile
+    container_name: $API_CONTAINER_NAME
+    ports:
+     - $API_PORT:80
+    environment: 
+      ASPNETCORE_ENVIRONMENT: Production
+      X_BACKEND_SERVER: server1
+      MINIO_ENDPOINT: $MINIO_ENDPOINT
+      MINIO_ACCESS_KEY: $MINIO_ACCESS_KEY
+      MINIO_SECRET_KEY: $MINIO_SECRET_KEY
+      
+  minio1:
+    image: minio/minio:$MINIO_VERSION
+    container_name: $MINIO_PROXY_NAME
+    volumes:
+      - data1:/data
+    environment:
+      MINIO_ACCESS_KEY: $MINIO_ACCESS_KEY
+      MINIO_SECRET_KEY: $MINIO_SECRET_KEY
+    command: server data
+
+volumes:
+  data1:
+    driver: local
+    driver_opts:
+      type: none
+      device: /Users/temel/Desktop/MiniData
+      o: bind
