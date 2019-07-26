@@ -12,46 +12,39 @@ services:
   environment:
    MINIO_ACCESS_KEY: $MINIO_ACCESS_KEY
    MINIO_SECRET_KEY: $MINIO_SECRET_KEY
-  #  command: server *
-  command: server http://minio1/data http://minio2/data http://minio3/data http://minio4/data 
-  # networks:
-  #   - minionetwork
+  command: server data
 
  minio2:
   image: minio/minio:$MINIO_VERSION  
   container_name: "customminio2"
   volumes:
-   - data2:/data
+   - data1:/data
   environment:
    MINIO_ACCESS_KEY: $MINIO_ACCESS_KEY
    MINIO_SECRET_KEY: $MINIO_SECRET_KEY
-  command: server http://minio1/data http://minio2/data http://minio3/data http://minio4/data 
-  # networks:
-  #   - minionetwork
+   MINIO_BUCKET: safak
+  command: server data
 
  minio3:
   image: minio/minio:$MINIO_VERSION
   container_name: "customminio3"
   volumes:
-   - data3:/data
+   - data1:/data
   environment:
    MINIO_ACCESS_KEY: $MINIO_ACCESS_KEY
    MINIO_SECRET_KEY: $MINIO_SECRET_KEY
-  command: server http://minio1/data http://minio2/data http://minio3/data http://minio4/data 
-  # networks:
-  #   - minionetwork
+  command: server data
 
  minio4:
   image: minio/minio:$MINIO_VERSION
   container_name: "customminio4"
   volumes:
-   - data4:/data
+   - data1:/data
   environment:
    MINIO_ACCESS_KEY: $MINIO_ACCESS_KEY
    MINIO_SECRET_KEY: $MINIO_SECRET_KEY
-  command: server http://minio1/data http://minio2/data http://minio3/data http://minio4/data 
-  # networks:
-  #   - minionetwork
+  command: server data
+
 
  proxy:
   image: minio-proxy
@@ -60,8 +53,6 @@ services:
     context: ./proxy
   ports:
     - '9000:8080'
-  expose:
-    - "9000"
   depends_on:
     - minio1
     - minio2
@@ -78,9 +69,11 @@ services:
 ## For custom volumes replace with volume driver configuration.
 volumes:
   data1:
-  data2:
-  data3:
-  data4:
+    driver: local
+    driver_opts:
+      type: none
+      device: /Users/temel/Desktop/MiniData
+      o: bind
 
 # networks:
 #   minionetwork:

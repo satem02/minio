@@ -11,20 +11,24 @@ services:
    - data1:/data
   ports:
    - "9000:9000"
-  expose:
-    - "9000"
   environment:
    MINIO_ACCESS_KEY: $MINIO_ACCESS_KEY
    MINIO_SECRET_KEY: $MINIO_SECRET_KEY
-  command: server *
+  command: server data
   networks:
     - minionetwork
 
 ## By default this config uses default local driver,
 ## For custom volumes replace with volume driver configuration.
+# volumes:
+#   data1: 
 volumes:
   data1:
-
+    driver: local
+    driver_opts:
+      type: none
+      device: /Users/temel/Desktop/MiniData
+      o: bind
 networks:
   minionetwork:
     driver: bridge
